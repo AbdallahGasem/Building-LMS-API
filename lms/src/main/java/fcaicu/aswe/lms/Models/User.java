@@ -1,36 +1,54 @@
 package fcaicu.aswe.lms.Models;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
-import java.awt.Image;
+import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
+@Table(name = "usertable")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "[UID]")
     private int UID;
-    private String Name; // VARCHAR(30),
-    private String Email; // unique not null
-    private String Password; // VARCHAR(8) NOT NULL,
-    private String Role; // CHECK ([Role] IN ('ADMIN', 'INSTRUC', 'STUD')),
-    private Image ProfilePic; 
-    private String CreationAdminID; // fk to UID need to map this relation ya wagdy
 
-    // what for?!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<User> users;
+    @Column(length = 30)
+    private String Name;    // VARCHAR(30)
+
+    @Column(unique = true, nullable = false)
+    private String Email;   // unique not null
+
+    @Column(nullable = false, length = 255)
+    private String Password;    // NVARCHAR(255), [need to be encrepted before sending to the DB ]
     
-    // submission relation
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @Column(name = "Role")
+    private String Role;    // NVARCHAR(20) , CHECK ([Role] IN ('ADMIN', 'INSTRUCTOR', 'STUDENT')) ---> Could force an enum!
+        
+
+
+    // User-User Relationship <create>
+    // fk to UID User
+    @ManyToOne
+    @JoinColumn(name = "creationadminid", referencedColumnName = "[UID]")
+    private User creationAdmin;
+
+    // Course-User relationship <Manages>
+    @OneToMany(mappedBy = "instructor", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "Course-User")
+    private List<Course> taughtCourses = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "enrolledStudents")
+    private List<Course> enrolledCourses = new ArrayList<>();
+
+
+    // Submission-User RelationShip <Submit>
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "Submission-User" )
     private List<Submission> submissions;
-
-
 
 
     public int getUID() {
@@ -58,7 +76,12 @@ public class User {
     }
 
     public void setPassword(String password) {
-        Password = password;
+        Password = encryptPassword(password);
+    }
+
+    private String encryptPassword(String password) {
+        // Add your encryption logic here
+        return password; // Replace this with actual encryption logic
     }
 
     public String getRole() {
@@ -69,28 +92,51 @@ public class User {
         Role = role;
     }
 
-    public Image getProfilePic() {
-        return ProfilePic;
+
+    public List<Course> getTaughtCourses(){
+        return taughtCourses;
     }
 
-    public void setProfilePic(Image profilePic) {
-        ProfilePic = profilePic;
+    public void setTaughtCourses(List<Course> taughtCourses){
+        this.taughtCourses = taughtCourses;
     }
 
-    public String getCreationAdminID() {
-        return CreationAdminID;
+    public List<Course> getEnrolledCourses() {
+        return enrolledCourses;
     }
 
-    public void setCreationAdminID(String creationAdminID) {
-        CreationAdminID = creationAdminID;
+    public void setEnrolledCourses(List<Course> enrolledCourses) {
+        this.enrolledCourses = enrolledCourses;
     }
 
-    public List<User> getUsers(){
-        return users;
+
+    public User getCreationAdmin() {
+        return creationAdmin;
     }
 
-    public void setUsers(List<User> users){
-        this.users = users;
+    public void setCreationAdmin(User creationAdmin) {
+        this.creationAdmin = creationAdmin;
+    }
+    
+    //-----------------------------------------[Submission-User Relationship Methods]--------------------------------------------//
+    
+    public List<Submission> getSubmissions() {
+        return submissions;
     }
 
+    public void setSubmissions(List<Submission> submissions) {
+        this.submissions = submissions;
+    }
+
+    // synchronization of the bi directional relationship!
+    public void addSubmission(Submission submission) {
+        submissions.add(submission);
+        submission.setStudent(this);
+    }
+    
+    public void removeSubmission(Submission submission) {
+        submissions.remove(submission);
+        submission.setStudent(null);
+    }
+    
 }

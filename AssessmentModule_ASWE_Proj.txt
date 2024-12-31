@@ -1,0 +1,137 @@
+Assessment & Grading Module
+____________________________
+
+-->| Requirments:  Assessment
+
+
+student can Handin an assignment	-- student Post submission [done in submission]
+student view grade for assignment 	-- get submission status and grade[done in submission]
+instructor put the grade manually  	-- add score & feedback for a submission [done in submission]
+student submit a quiz			-- student Post submission [done in submission]
+student view grade for quiz 		-- get submission status and grade [done in submission]
+
+student can view an assignment		-- Addressed!
+instructor add assignment		-- Addressed!
+instructor edit assignment		-- Addressed!
+instructor remove assignment		-- Addressed!
+retrieve all created assignments	-- Addressed!
+Student Enter a quiz 			-- Addressed! 		
+instructor edit quiz			-- Addressed!
+instructor remove quiz			-- Addressed!
+retrieve all created Quizes		-- Addressed!
+instructor add quiz [manually/random by topic from the question bank] 	--Addressed
+
+
+-->| Planning:
+
+- get Assessment by id			--done
+  (merged to a dynamic "get all Assessments of a Certain type(Assign\Quiz) of a course)
+- get all Assessments of type assignment of a course 		--done				 	
+- get all Assessments of type Quiz of a course			--done
+- get all Assessments of a Course		--done
+- get all Assessments				--done
+- get all assignments				--done
+- get all Quizzes				--done
+- get quiz questions				--done
+- get Assessment Submissions			--done
+- DELETE Assessment by id			--done
+- DELETE all Assessments			--done
+
+/* Post/put Operations */
+___________________________________________________________________________________________________________________________________________
+- Edit Assessment by id		--done
+- Create Assignment 		--done
+- Create a quiz manualy		--done
+- Create a Quiz form QB Specifying the n Random QS	--done	(n,topic,qqtype in the url pathvariables!)
+
+						   		|------------> Generate N random Question with each Api Call  (Question Bank by topic) 
+		   	  |----------- [Quiz]---(MCQ,T/F,SA)?---|
+			  | 			   		|------------> Upload AssessFILE (Manualy)
+			  |
+create assessment  -------|
+			  |
+			  |----------- [Assignment] ----> simply Upload AssessFILE
+
+___________________________________________________________________________________________________________________________________________
+
+-->| ENDPOINTS:
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------
+-->| Requirments:  Question
+
+- get qs by id					--done
+- get the assessment of a qustion		--done
+- get questions by topic of a certain type	--done
+- get correct ans of a qs			--done
+- Delete a Question by ID			--done 
+- Delete Questions of a Topic			--done
+- Delete all questions				--done
+
+/* Post/put Operations */
+___________________________
+- Create Question
+- Edit a Question
+___________________________
+
+-->| ENDPOINTS:
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
+
+-->| Requirments & Planning:  Submission (appeared at the erd)
+
+
+retrieve all submisions						--> done
+retrieve a submisson of a student of a certain assessment	--> done
+retrieve all submissions for an assessment			--> done
+retrieve all submissions of a student				--> done
+Delete submission of an Assessment of a certain student		--> done
+Delete all submissions of an assessment 			--> done
+Delete all submissons of a student				--> done
+
+/* GRADING */
+______________________________________________________________________________________________________________
+VVVVV.IMP. --> Upon Submisson of a quiz(post an Submission of type quiz) Score calculated Automatically!
+EDIT Score
+EDIT Feedback
+Edit status
+______________________________________________________________________________________________________________
+
+/* Post/put Operations */
+____________________________________________________________________________________________
+add submission for an assessment of a certain student	    
+edit a submission for a certain student of a certain assess id! Put \ post zy ma hnashof
+____________________________________________________________________________________________
+
+-->| ENDPOINTS:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,5 +1,8 @@
 package fcaicu.aswe.lms.Models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,11 +15,16 @@ public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int QID;
-    private String Type;
-    private String QHeader;
-    private String Choices;
-    private String CorrectAns;
-    private String Topic;
+    @Column(length = 5, nullable = false)
+    private String Type;   // VARCHAR(5) NOT NULL
+    @Column(nullable = false)
+    private String QHeader; // TEXT NOT NULL
+    @Column(nullable = false)
+    private String Choices; // TEXT NOT NULL
+    @Column(name = "correctans" ,nullable = false)
+    private String CorrectAns; // TEXT NOT NULL
+    @Column(length = 100, nullable = false)
+    private String Topic; // VARCHAR(100) NOT NULL
 
     /*
     "mappedBy" Attribute in `@OneToMany` Relationship
@@ -42,8 +50,12 @@ public class Question {
 
     These annotations together ensure that the relationship between `Assessment` and `Question` is properly mapped and managed in the JPA context.
     */
+
+    // Assessment-Question RelationShip <has>
+    // fk to AssessID
     @ManyToOne
     @JoinColumn(name = "AssessID", nullable = true)
+    @JsonBackReference(value = "Assessment-Question")   // mapped to the json manage ref
     private Assessment assessment;
 
     public int getQID() {
@@ -89,6 +101,8 @@ public class Question {
     public void setTopic(String topic) {
         Topic = topic;
     }
+
+    // ---------------------------------------[ Assessment-Question Relationship Methods ]---------------------------------------//
 
     public Assessment getAssessment() {
         return assessment;

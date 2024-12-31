@@ -2,44 +2,58 @@ package fcaicu.aswe.lms.Models;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import fcaicu.aswe.lms.Embedded.SubmissionKey;
+import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 
 @Entity
 public class Submission {
-    @Id  //complex how
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int AssessID; // m to 1 fk to the Assessment --- pk 
-    private int SID; // m to 1 fk to the User --- pk
+    
+    @EmbeddedId
+    private SubmissionKey submissionID;   // Composite(assessID & SID)
+    // private int AssessID; // m to 1 fk to the Assessment --- pk 
+    // private int SID; // m to 1 fk to the User --- pk
+    
+    @Column(name = "FileURL",length = 255)
     private String FileURL; // VARCHAR(255)
+    @Column(name = "Subtime")
     private LocalDateTime Subtime; // DATETIME NOT NULL DEFAULT getdate()
+    @Column(name = "Status",length = 255)
     private String Status; // VARCHAR(255)
-    private int Score;
+    @Column(name = "Score")
+    private Integer Score;  // changed int to INTEGER to allow null values!
+    
+    @Column(name = "feedback")  
     private String FeedBack;
 
+    // Submission-Assessment Relationship <Submitted>
     @ManyToOne
-    @JoinColumn(name = "AssessID", nullable = true)
+    @JoinColumn(name = "AssessID", referencedColumnName = "AssessID") //Foreign key to assessment table
+    @MapsId("AssessID") // Map composite key part to assessment
+    @JsonBackReference(value = "Submission-Assessment")     // mapped to the json manage ref
     private Assessment assessment;
     
+    // Submission-User RelationShip <Submit>
+    // fk to UID User 
     @ManyToOne
-    @JoinColumn(name = "UID", nullable = true)
-    private User user;
+    @MapsId("SID")  // Map composite key part to assessment
+    @JoinColumn(name = "SID", referencedColumnName = "[UID]") //Foreign key to user table
+    @JsonBackReference(value = "Submission-User" )
+    private User student;
 
-    public int getAssessID() {
-        return AssessID;
+    
+    public SubmissionKey getSubmissionID() {
+        return submissionID;
     }
 
-
-    public int getSID() {
-        return SID;
-    }
-
-    public void setSID(int SID) {
-        this.SID = SID;
+    public void setSubmissionID(SubmissionKey submissionID) {
+        this.submissionID = submissionID;
     }
 
     public String getFileURL() {
@@ -66,11 +80,11 @@ public class Submission {
         Status = status;
     }
 
-    public int getScore() {
-        return Score;
+    public Integer getScore() {
+        return Score != null? Score : -999 ;
     }
 
-    public void setScore(int score) {
+    public void setScore(Integer score) {
         Score = score;
     }
 
@@ -91,12 +105,12 @@ public class Submission {
         this.assessment = assessment;
     }
 
-    public User getUser() {
-        return user;
+    public User getStudent() {
+        return student;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setStudent(User student) {
+        this.student = student;
     }
     
     
